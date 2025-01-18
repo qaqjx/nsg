@@ -2,19 +2,19 @@
 // Created by 付聪 on 2017/6/21.
 //
 
+#include <chrono>
 #include <efanna2e/index_nsg.h>
 #include <efanna2e/util.h>
-#include <chrono>
 #include <string>
 
-void load_data(char* filename, float*& data, unsigned& num,
-               unsigned& dim) {  // load data with sift10K pattern
+void load_data(char *filename, float *&data, unsigned &num,
+               unsigned &dim) { // load data with sift10K pattern
   std::ifstream in(filename, std::ios::binary);
   if (!in.is_open()) {
     std::cout << "open file error" << std::endl;
     exit(-1);
   }
-  in.read((char*)&dim, 4);
+  in.read((char *)&dim, 4);
   // std::cout<<"data dimension: "<<dim<<std::endl;
   in.seekg(0, std::ios::end);
   std::ios::pos_type ss = in.tellg();
@@ -25,33 +25,33 @@ void load_data(char* filename, float*& data, unsigned& num,
   in.seekg(0, std::ios::beg);
   for (size_t i = 0; i < num; i++) {
     in.seekg(4, std::ios::cur);
-    in.read((char*)(data + i * dim), dim * 4);
+    in.read((char *)(data + i * dim), dim * 4);
   }
   in.close();
 }
 
-void save_result(const char* filename,
-                 std::vector<std::vector<unsigned> >& results) {
+void save_result(const char *filename,
+                 std::vector<std::vector<unsigned>> &results) {
   std::ofstream out(filename, std::ios::binary | std::ios::out);
 
   for (unsigned i = 0; i < results.size(); i++) {
     unsigned GK = (unsigned)results[i].size();
-    out.write((char*)&GK, sizeof(unsigned));
-    out.write((char*)results[i].data(), GK * sizeof(unsigned));
+    out.write((char *)&GK, sizeof(unsigned));
+    out.write((char *)results[i].data(), GK * sizeof(unsigned));
   }
   out.close();
 }
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   if (argc != 7) {
     std::cout << argv[0]
               << " data_file query_file nsg_path search_L search_K result_path"
               << std::endl;
     exit(-1);
   }
-  float* data_load = NULL;
+  float *data_load = NULL;
   unsigned points_num, dim;
   load_data(argv[1], data_load, points_num, dim);
-  float* query_load = NULL;
+  float *query_load = NULL;
   unsigned query_num, query_dim;
   load_data(argv[2], query_load, query_num, query_dim);
   assert(dim == query_dim);
@@ -75,8 +75,9 @@ int main(int argc, char** argv) {
   paras.Set<unsigned>("L_search", L);
   paras.Set<unsigned>("P_search", L);
 
-  std::vector<std::vector<unsigned> > res(query_num);
-  for (unsigned i = 0; i < query_num; i++) res[i].resize(K);
+  std::vector<std::vector<unsigned>> res(query_num);
+  for (unsigned i = 0; i < query_num; i++)
+    res[i].resize(K);
 
   auto s = std::chrono::high_resolution_clock::now();
   for (unsigned i = 0; i < query_num; i++) {
