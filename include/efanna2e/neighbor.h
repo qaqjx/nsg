@@ -7,8 +7,10 @@
 #ifndef EFANNA2E_GRAPH_H
 #define EFANNA2E_GRAPH_H
 
+#include "efanna2e/util.h"
 #include <cstddef>
 #include <mutex>
+#include <random>
 #include <vector>
 
 namespace efanna2e {
